@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "kG2XtUrWz+TOwvwd6Fd/LeWg7nwb0DWrFIDS2LDIrDcYD6TcgiiXZXY/DtxLvKaem1+E/WVaDREeskAsGL/vFw==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Anuitex\\Desktop\\New_folder\\DataStorageService\\DataStorageService\\DataStorageService.Services\\DataStorageService.Services.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Anuitex\\.nuget\\packages\\csvhelper\\30.0.1\\csvhelper.30.0.1.nupkg.sha512",
+    "C:\\Users\\Anuitex\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\7.0.0\\microsoft.extensions.dependencyinjection.abstractions.7.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}

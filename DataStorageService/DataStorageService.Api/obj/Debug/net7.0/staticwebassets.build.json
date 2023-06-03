@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "nlOcr7AaUskBksMdkry8T4jlDybisN+5ybK7eZuU5k0=",
+  "Source": "DataStorageService.Api",
+  "BasePath": "_content/DataStorageService.Api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

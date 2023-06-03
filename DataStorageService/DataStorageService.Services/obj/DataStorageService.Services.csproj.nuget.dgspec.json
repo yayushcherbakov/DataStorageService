@@ -1,0 +1,77 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\Users\\Anuitex\\Desktop\\New_folder\\DataStorageService\\DataStorageService\\DataStorageService.Services\\DataStorageService.Services.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\Anuitex\\Desktop\\New_folder\\DataStorageService\\DataStorageService\\DataStorageService.Services\\DataStorageService.Services.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\Anuitex\\Desktop\\New_folder\\DataStorageService\\DataStorageService\\DataStorageService.Services\\DataStorageService.Services.csproj",
+        "projectName": "DataStorageService.Services",
+        "projectPath": "C:\\Users\\Anuitex\\Desktop\\New_folder\\DataStorageService\\DataStorageService\\DataStorageService.Services\\DataStorageService.Services.csproj",
+        "packagesPath": "C:\\Users\\Anuitex\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Anuitex\\Desktop\\New_folder\\DataStorageService\\DataStorageService\\DataStorageService.Services\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\Anuitex\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net7.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {},
+          "https://pkgs.dev.azure.com/observeid/_packaging/observeid/nuget/v3/index.json": {}
+        },
+        "frameworks": {
+          "net7.0": {
+            "targetAlias": "net7.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net7.0": {
+          "targetAlias": "net7.0",
+          "dependencies": {
+            "CsvHelper": {
+              "target": "Package",
+              "version": "[30.0.1, )"
+            },
+            "Microsoft.Extensions.DependencyInjection.Abstractions": {
+              "target": "Package",
+              "version": "[7.0.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.100\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
