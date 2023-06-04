@@ -1,0 +1,5 @@
+DataStorageService/.idea
+DataStorageService/DataStorageService.Api/obj
+DataStorageService/DataStorageService.Api/Uploads
+DataStorageService/DataStorageService.Api/bin
+DataStorageService/DataStorageService.Api/bin/Debug/net7.0/DataStorageService.Api.dll

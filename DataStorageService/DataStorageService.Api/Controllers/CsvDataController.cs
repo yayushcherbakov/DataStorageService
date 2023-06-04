@@ -24,6 +24,14 @@ namespace DataStorageService.Api.Controllers
 
             return Ok();
         }
+        
+        [HttpDelete("Delete")]
+        public async Task<IActionResult> Delete(string fileName, CancellationToken cancellationToken)
+        {
+            await _csvDataService.Delete(fileName, _hostEnvironment.ContentRootPath, cancellationToken);
+
+            return Ok();
+        }
 
         [HttpGet("GetFilesInfo")]
         public async Task<IActionResult> GetFiles(CancellationToken cancellationToken)

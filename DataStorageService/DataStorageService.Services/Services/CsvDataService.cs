@@ -26,6 +26,19 @@ internal class CsvDataService : ICsvDataService
         await file.CopyToAsync(fileStream, cancellationToken);
     }
 
+    public async Task Delete(string fileName, string rootPath, CancellationToken cancellationToken)
+    {
+        var uploadPath = Path.Combine(rootPath, DataImportConstants.UploadsFolder);
+        var filePath = Path.Combine(uploadPath, fileName);
+
+        if (!File.Exists(filePath))
+        {
+            throw new ApplicationException(string.Format(ErrorMessages.FileNotFound, fileName));
+        }
+        
+        File.Delete(filePath);
+    }
+
     public async Task<List<FileInfoData>> GetFiles(string rootPath, CancellationToken cancellationToken)
     {
         var uploadPath = Path.Combine(rootPath, DataImportConstants.UploadsFolder);
@@ -37,22 +50,24 @@ internal class CsvDataService : ICsvDataService
             using var reader = new StreamReader(filePath);
             using var csv = new CsvReader(reader, System.Globalization.CultureInfo.InvariantCulture);
 
-            if (!await csv.ReadAsync() || !csv.ReadHeader())
-            {
-                continue;
-            }
-
-            if (csv.HeaderRecord == null)
-            {
-                continue;
-            }
+            var headers = await GetCsvHeaders(csv);
 
             var fileInfo = new FileInfo(filePath);
-            var headers = csv.HeaderRecord.ToList();
+
             filesInfo.Add(new FileInfoData(fileInfo.Name, fileInfo.Length, headers));
         }
 
         return filesInfo;
+    }
+
+    private async Task<List<string>> GetCsvHeaders(CsvReader csv)
+    {
+        if (!await csv.ReadAsync() || !csv.ReadHeader() || csv.HeaderRecord == null)
+        {
+            throw new ApplicationException(ErrorMessages.CsvHeadersNotFound);
+        }
+
+        return csv.HeaderRecord.ToList();
     }
 
     public async Task<List<dynamic>> GetData(GetDataPayload payload, string rootPath,
@@ -68,6 +83,24 @@ internal class CsvDataService : ICsvDataService
 
         using var reader = new StreamReader(filePath);
         using var csv = new CsvReader(reader, System.Globalization.CultureInfo.InvariantCulture);
+
+        var headers = (await GetCsvHeaders(csv)).ToHashSet();
+
+        var requestedColumnNames = payload.Filters
+            .Select(x => x.ColumnName)
+            .Union(payload.Sorting
+                .Select(x => x.ColumnName))
+            .Distinct();
+
+        foreach (var requestedColumnName in requestedColumnNames)
+        {
+            if (!headers.Contains(requestedColumnName))
+            {
+                throw new ApplicationException(
+                    string.Format(ErrorMessages.CsvColumnNotFound, payload.FileName, requestedColumnName));
+            }
+        }
+
         var records = csv.GetRecords<dynamic>();
 
         if (payload.Filters.Any())
@@ -83,33 +116,45 @@ internal class CsvDataService : ICsvDataService
         return records.ToList();
     }
 
-
-    private IEnumerable<dynamic> ApplyFilters(IEnumerable<dynamic> records, List<Filter> filters)
+    private static IEnumerable<dynamic> ApplyFilters(IEnumerable<dynamic> records, List<Filter> filters)
     {
         if (!filters.Any())
         {
             return records;
         }
-        
+
         foreach (var filter in filters)
         {
             records = filter.FilterAction switch
             {
                 FilterAction.Equal => records.Where(record =>
-                    ((IDictionary<string, object>)record)[filter.ColumnName].Equals(filter.Value)),        
+                    GetPropertyValue(record, filter.ColumnName)
+                        .ToString()
+                        .Equals(filter.Value)),
                 FilterAction.NotEqual => records.Where(record =>
-                    !((IDictionary<string, object>)record)[filter.ColumnName].Equals(filter.Value)),
+                    !GetPropertyValue(record, filter.ColumnName)
+                        .ToString()
+                        .Equals(filter.Value)),
 
                 FilterAction.Contains => records.Where(record =>
-                    ((string)((IDictionary<string, object>)record)[filter.ColumnName]).Contains(filter.Value)),
+                    GetPropertyValue(record, filter.ColumnName)
+                        .ToString()
+                        .Contains(filter.Value)),
                 FilterAction.NotContains => records.Where(record =>
-                    !((string)((IDictionary<string, object>)record)[filter.ColumnName]).Contains(filter.Value)),
-                
+                    !GetPropertyValue(record, filter.ColumnName)
+                        .ToString()
+                        .Contains(filter.Value)),
+
                 _ => throw new AggregateException(nameof(FilterAction))
             };
         }
 
         return records;
+    }
+
+    private static object GetPropertyValue(dynamic target, string propertyName)
+    {
+        return ((IDictionary<string, object>)target)[propertyName];
     }
 
     private IEnumerable<dynamic> ApplySort(IEnumerable<dynamic> records, List<ColumnOrder> columnOrders)
@@ -124,20 +169,20 @@ internal class CsvDataService : ICsvDataService
         var orderedRecords = firstColumnOrder.OrderDirection switch
         {
             OrderDirection.Asc => records.OrderBy(record =>
-                ((IDictionary<string, object>)record)[firstColumnOrder.ColumnName]),
+                GetPropertyValue(record, firstColumnOrder.ColumnName)),
             OrderDirection.Desc => records.OrderByDescending(record =>
-                ((IDictionary<string, object>)record)[firstColumnOrder.ColumnName]),
+                GetPropertyValue(record, firstColumnOrder.ColumnName)),
             _ => throw new AggregateException(nameof(OrderDirection))
         };
-        
+
         foreach (var columnOrder in columnOrders.Skip(1))
         {
             orderedRecords = columnOrder.OrderDirection switch
             {
                 OrderDirection.Asc => orderedRecords.ThenBy(record =>
-                    ((IDictionary<string, object>)record)[columnOrder.ColumnName]),
+                    GetPropertyValue(record, columnOrder.ColumnName)),
                 OrderDirection.Desc => orderedRecords.ThenByDescending(record =>
-                    ((IDictionary<string, object>)record)[columnOrder.ColumnName]),
+                    GetPropertyValue(record, columnOrder.ColumnName)),
                 _ => throw new AggregateException(nameof(OrderDirection))
             };
         }
