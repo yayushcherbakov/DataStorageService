@@ -1,5 +1,8 @@
 ﻿namespace DataStorageService.Services.Constants;
 
+/// <summary>
+/// The class contains error constants.
+/// </summary>
 public class ErrorMessages
 {
     public static readonly string InvalidFileExtension = "File {0} has an invalid extension.";

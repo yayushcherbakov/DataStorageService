@@ -2,6 +2,9 @@
 
 namespace DataStorageService.Services.Enums;
 
+/// <summary>
+/// Order direction enum.
+/// </summary>
 public enum OrderDirection
 {
     [Display(Name = "Ascending")]

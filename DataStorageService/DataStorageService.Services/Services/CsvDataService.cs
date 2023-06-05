@@ -6,8 +6,14 @@ using DataStorageService.Services.Services.Interfaces;
 
 namespace DataStorageService.Services.Services;
 
+/// <summary>
+/// Service for CSV data processing.
+/// </summary>
 internal class CsvDataService : ICsvDataService
 {
+    /// <summary>
+    /// The logic of uploading CSV files to the server.
+    /// </summary>
     public async Task Upload(Stream file, string fileName, string rootPath, CancellationToken cancellationToken)
     {
         var fileExtension = Path.GetExtension(fileName);
@@ -26,6 +32,9 @@ internal class CsvDataService : ICsvDataService
         await file.CopyToAsync(fileStream, cancellationToken);
     }
 
+    /// <summary>
+    /// The logic of the CSV file deletion process from the server.
+    /// </summary>
     public async Task Delete(string fileName, string rootPath, CancellationToken cancellationToken)
     {
         var uploadPath = Path.Combine(rootPath, DataImportConstants.UploadsFolder);
@@ -39,6 +48,9 @@ internal class CsvDataService : ICsvDataService
         File.Delete(filePath);
     }
 
+    /// <summary>
+    /// Logic for processing a request for a list of files and information about files from the server.
+    /// </summary>
     public async Task<List<FileInfoData>> GetFiles(string rootPath, CancellationToken cancellationToken)
     {
         var uploadPath = Path.Combine(rootPath, DataImportConstants.UploadsFolder);
@@ -60,6 +72,9 @@ internal class CsvDataService : ICsvDataService
         return filesInfo;
     }
 
+    /// <summary>
+    /// Gets file headers.
+    /// </summary>
     private async Task<List<string>> GetCsvHeaders(CsvReader csv)
     {
         if (!await csv.ReadAsync() || !csv.ReadHeader() || csv.HeaderRecord == null)
@@ -69,7 +84,10 @@ internal class CsvDataService : ICsvDataService
 
         return csv.HeaderRecord.ToList();
     }
-
+    
+    /// <summary>
+    /// The logic of processing a request to receive data from the server.
+    /// </summary>
     public async Task<List<dynamic>> GetData(GetDataPayload payload, string rootPath,
         CancellationToken cancellationToken)
     {
@@ -115,7 +133,10 @@ internal class CsvDataService : ICsvDataService
 
         return records.ToList();
     }
-
+    
+    /// <summary>
+    /// Takes a set of filters as input and applies them to the dataset.
+    /// </summary>
     private static IEnumerable<dynamic> ApplyFilters(IEnumerable<dynamic> records, List<Filter> filters)
     {
         if (!filters.Any())
@@ -152,11 +173,17 @@ internal class CsvDataService : ICsvDataService
         return records;
     }
 
+    /// <summary>
+    ///Extracts a property value.
+    /// </summary>
     private static object GetPropertyValue(dynamic target, string propertyName)
     {
         return ((IDictionary<string, object>)target)[propertyName];
     }
 
+    /// <summary>
+    /// Applies the specified sort order to the records and returns the sorted sequence of records.
+    /// </summary>
     private IEnumerable<dynamic> ApplySort(IEnumerable<dynamic> records, List<ColumnOrder> columnOrders)
     {
         if (!columnOrders.Any())
