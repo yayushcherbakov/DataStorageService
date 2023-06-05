@@ -26,3 +26,11 @@
 #### 1. Дополнительный эндпойнт [DELETE] /api/CsvData/Delete для удаление ранее загруженного файла
 #### 2. Dockerfile для запуска сервиса в Docker
 #### 3. Документация к коду
+### Технологии и язык программирования:
+Платформа: .NET 7.0
+
+Язык: С# 10
+
+Frameworks: Microsoft.AspNetCore.App, Microsoft.NetCore.App
+
+Packages: CsvHelper/30.0.1, Swashbuckle.AspNetCore.App/6.2.3, Microsoft.Extensions.DependencyInjection.Absractions/7.0.0
